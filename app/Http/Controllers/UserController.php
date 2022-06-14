@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -15,7 +16,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return response($users ,200);
+        // return new UserResource($users);
+        return UserResource::collection($users);
         
     }
 
@@ -36,7 +38,7 @@ class UserController extends Controller
         $user->city = $request->get('city');
         $user->country = $request->get('country');
         $user->save();
-        return response($user);
+        return new UserResource($user);
 
     }
 
@@ -46,22 +48,6 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request\UserStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserStoreRequest $request)
-    {
-
-        // Retrieve the validated input data...
-        $validated = $request->validated();
-
-        $user = new User(); 
-        $user->first_name = $request->get('first_name');
-        $user->last_name= $request->get('last_name');
-        $user->email= $request->get('email');
-        $user->job_title = $request->get('job_title');
-        $user->city = $request->get('city');
-        $user->country = $request->get('country');
-        $user->save();
-        return redirect('/users')->with('success', 'User saved!');
-    }
 
     /**
      * Display the specified resource.
@@ -80,11 +66,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    { 
+    public function edit(UserStoreRequest $request, $id)
+    {   
         $user = User::find($id);
-        // return response::json('users.edit', compact('user'));   
-        return response($user ,200);     
+        $user->first_name =  $request->get('first_name');
+        $user->last_name = $request->get('last_name');  
+        $user->email = $request->get('email');
+        $user->job_title = $request->get('job_title');
+        $user->city = $request->get('city');
+        $user->country = $request->get('country');
+        $user->save(); 
+        return  new UserResource($user);
+
     }
 
     /**
@@ -94,25 +87,6 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'email'=>'required'
-        ]);
-
-        $user = User::find($id);
-        $user->first_name =  $request->get('first_name');
-        $user->last_name = $request->get('last_name');
-        $user->email = $request->get('email');
-        $user->job_title = $request->get('job_title');
-        $user->city = $request->get('city');
-        $user->country = $request->get('country');
-        $user->save();
-
-        return redirect('/users')->with('success', 'User updated!');
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -122,13 +96,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        // $user = User::find($id);
-        // $user->delete();
-
-        // return redirect('/users')->with('success', 'User deleted!');
-
         $user = User::find($id);  
         $user->delete();
-        return response($user ,200);
+        return new UserResource($user);
     }
 }
