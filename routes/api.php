@@ -22,3 +22,4 @@ use Illuminate\Support\Facades\Route;
     Route::post('users/create', 'App\Http\Controllers\UserController@create');
     Route::put('users/edit/{id}', 'App\Http\Controllers\UserController@edit');
     Route::delete('users/delete/{id}', 'App\Http\Controllers\UserController@destroy');
+    Route::post('users/login', 'App\Http\Controllers\api\v1\LoginController@login');
