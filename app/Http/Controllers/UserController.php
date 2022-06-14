@@ -15,8 +15,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-
-        return view('users.index', compact('users'));
+        return response($users ,200);
+        
     }
 
     /**
@@ -24,9 +24,20 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        return view('users.create');
+    public function create(UserStoreRequest $request)
+    {   // need to check with hazim
+        
+        
+        $user = new User(); 
+        $user->first_name = $request->get('first_name');
+        $user->last_name= $request->get('last_name');
+        $user->email= $request->get('email');
+        $user->job_title = $request->get('job_title');
+        $user->city = $request->get('city');
+        $user->country = $request->get('country');
+        $user->save();
+        return response($user);
+
     }
 
     /**
@@ -82,9 +93,10 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
+    { 
         $user = User::find($id);
-        return view('users.edit', compact('user'));        
+        // return response::json('users.edit', compact('user'));   
+        return response($user ,200);     
     }
 
     /**
@@ -122,9 +134,13 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-        $user->delete();
+        // $user = User::find($id);
+        // $user->delete();
 
-        return redirect('/users')->with('success', 'User deleted!');
+        // return redirect('/users')->with('success', 'User deleted!');
+
+        $user = User::find($id);  
+        $user->delete();
+        return response($user ,200);
     }
 }
