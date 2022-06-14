@@ -51,18 +51,6 @@ class UserController extends Controller
 
         // Retrieve the validated input data...
         $validated = $request->validated();
-    
-        // Retrieve a portion of the validated input data...
-        // $validated = $request->safe()->only(['name','last_name' , 'email']);
-        // $validated = $request->safe()->except(['name','last_name' , 'email']);
-        
-        //please do check again this part
-
-        // $request->validate([
-        //     'first_name'=>'required',
-        //     'last_name'=>'required',
-        //     'email'=>'required'
-        // ]);
 
         $user = new User(); 
         $user->first_name = $request->get('first_name');
